@@ -10,13 +10,31 @@ import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-public class WordToText {
+public class WordToText extends AbstractXxxToText{
 
-	public static void main(String[] args) {
+	@Override
+	public void clean(File rootFile) {
+		
+		Util.iterateFiles(rootFile, new AbstractFileHandler() {
+			
+			@Override
+			public boolean preCheck(File file) {
+				boolean isOldTxt = file.getName().endsWith("doc.xxxToText.txt")||file.getName().endsWith("docx.xxxToText.txt");
+				return isOldTxt;
+			}
+			
+			@Override
+			public void doHandle(File file) {
+				file.delete();
+			}
+		});
+	}
 
-		//File rootFile = new File("C:\\Users\\developer\\git\\GuangFaDocument");
-		File rootFile = new File("C:\\Users\\developer\\git\\N00001-Cubiebaojiaxunjiaxitong");
-
+	
+	
+	@Override
+	public void doTransform(File rootFile) {
+		
 		Util.iterateFiles(rootFile, new AbstractFileHandler() {
 			
 			@Override
@@ -61,14 +79,13 @@ public class WordToText {
 					FileWriter fileWriter = new FileWriter(outFile);
 					fileWriter.write(text);
 					fileWriter.close();
-					System.out.println(text);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 			}
 		});
-
+		
 	}
 
 }
